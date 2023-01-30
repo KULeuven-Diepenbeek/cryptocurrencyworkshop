@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
 import hashlib
-
-
 import argparse
 
 # Instantiate the parser
@@ -17,20 +15,25 @@ args = parser.parse_args()
 # Access the arguments
 number_of_zeroes = args.number_of_zeroes
 
-
-
+# Init the hash object
 h = hashlib.new('sha256')
 h.update(b"Nobody inspects")
 digest = h.hexdigest()
-print( digest )
-i=0
+nonce=0
 
-while(digest[0:number_of_zeroes] != "0"*number_of_zeroes) :
-    i += 1 
+# While not suffient amount of leading zeroes
+while(digest[0:number_of_zeroes] != "0"*number_of_zeroes):
+    # Increment the nonce
+    nonce += 1 
+
+    # Calculate a new hash
     h = hashlib.new('sha256')
     h.update(b"Nobody inspects")
-    h.update(str(i).encode(encoding='UTF-8'))
+    h.update(str(nonce).encode(encoding='UTF-8'))
+
+    # Get & print the digest
     digest = h.hexdigest()
     print( digest )
 
-print("I needed %d attempts" % (i+1))
+# Show summary
+print("I needed %d attempts" % (nonce))
